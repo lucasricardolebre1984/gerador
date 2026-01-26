@@ -1,0 +1,78 @@
+Crie um sistema web chamado “Gerador de Propostas – New Grid Distribuidora”.
+
+OBJETIVO
+Um painel web simples, profissional e corporativo para gerar propostas comerciais de energia solar em PDF, com base em um catálogo de produtos atualizado via planilha Excel.
+
+USUÁRIOS
+- Login com e-mail e senha
+- Apenas 2 usuários iniciais
+- Não permitir cadastro público
+
+TELAS PRINCIPAIS
+1) Login
+2) Dashboard
+3) Nova Proposta
+4) Configurações da Empresa
+5) Catálogo (via planilha)
+
+DASHBOARD
+- Logo da New Grid Distribuidora no topo
+- Botão principal: “Nova Proposta”
+- Lista de propostas criadas (data, cliente, valor)
+- Ações: visualizar e baixar PDF
+
+NOVA PROPOSTA
+Campos obrigatórios:
+- Nome do cliente
+- Endereço completo
+- Cidade / Estado
+- Data do orçamento
+- Validade (dias)
+- Tipo de telhado
+- Potência do sistema (kWp)
+
+Itens da proposta:
+- Selecionar produtos do catálogo ativo
+- Informar quantidade por item
+- Calcular valor total automaticamente
+- Permitir edição manual do valor total antes de gerar o PDF
+
+CATÁLOGO (PLANILHA)
+- Área restrita ao administrador
+- Upload de arquivo Excel (.xlsx)
+- Selecionar aba da planilha
+- Importar produtos
+- Definir uma planilha ativa por vez
+- Atualização simples (substituir planilha antiga)
+
+REGRA CRÍTICA
+- Cada proposta deve salvar um snapshot dos itens usados
+- Propostas antigas não podem mudar se o catálogo for atualizado
+
+CONFIGURAÇÕES DA EMPRESA
+- Upload da logo
+- Nome da empresa
+- CNPJ
+- Endereço
+- Cidade / Estado
+- Texto padrão de condições gerais
+- Forma de pagamento padrão: 50% antecipado + 50% na entrega
+
+PDF GERADO
+- Formato A4
+- Cabeçalho com logo da New Grid Distribuidora
+- Seções:
+  • Dados da empresa
+  • Dados do cliente
+  • Dados do orçamento
+  • Tabela de itens
+  • Valor total destacado
+  • Condições gerais
+- Visual limpo, corporativo e profissional
+
+VISUAL
+- Paleta de cores: azul elétrico e cinza escuro
+- Estilo moderno, tecnológico e corporativo
+- Interface simples e objetiva
+
+Crie a estrutura inicial completa do app.
