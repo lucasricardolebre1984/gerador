@@ -3,7 +3,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '../components/SessionContextProvider';
-import { Button } from '../components/ui/button'; // Assumindo que shadcn/ui Button existe
+import { Button } from '../components/ui/button';
+import { supabase } from '../integrations/supabase/client';
 
 const Dashboard = () => {
   const { session, loading } = useSession();
