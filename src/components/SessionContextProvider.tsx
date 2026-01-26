@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { Session } from '@supabase/supabase-js';
+import { type Session } from '@supabase/supabase-js';
 import { supabase } from '../integrations/supabase/client';
 
 interface SessionContextType {

@@ -15,55 +15,39 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, loading } = useSession();
 
   if (loading) {
-    return <div className="flex justify-center items-center min-h-screen bg-gray-100">Carregando...</div>;
+    return React.createElement('div', {
+      className: "flex justify-center items-center min-h-screen bg-gray-100"
+    }, "Carregando...");
   }
 
   return session ? <>{children}</> : <Navigate to="/login" />;
 };
 
 function App() {
-  return (
-    <Router>
-      <SessionContextProvider>
-        <Toaster /> {/* Adiciona o Toaster para notificações */}
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Navigate to="/dashboard" />} />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/nova-proposta"
-            element={
-              <PrivateRoute>
-                <NovaProposta />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/configuracoes-empresa"
-            element={
-              <PrivateRoute>
-                <ConfiguracoesEmpresa />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/catalogo"
-            element={
-              <PrivateRoute>
-                <Catalogo />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </SessionContextProvider>
-    </Router>
+  return React.createElement(Router, null,
+    React.createElement(SessionContextProvider, null,
+      React.createElement(Toaster, null),
+      React.createElement(Routes, null,
+        React.createElement(Route, { path: "/login", element: React.createElement(Login) }),
+        React.createElement(Route, { path: "/", element: React.createElement(Navigate, { to: "/dashboard" }) }),
+        React.createElement(Route,
+          { path: "/dashboard",
+            element: React.createElement(PrivateRoute, null, React.createElement(Dashboard)) },
+        ),
+        React.createElement(Route,
+          { path: "/nova-proposta",
+            element: React.createElement(PrivateRoute, null, React.createElement(NovaProposta)) },
+        ),
+        React.createElement(Route,
+          { path: "/configuracoes-empresa",
+            element: React.createElement(PrivateRoute, null, React.createElement(ConfiguracoesEmpresa)) },
+        ),
+        React.createElement(Route,
+          { path: "/catalogo",
+            element: React.createElement(PrivateRoute, null, React.createElement(Catalogo)) },
+        )
+      )
+    )
   );
 }
 

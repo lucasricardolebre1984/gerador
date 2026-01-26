@@ -27,13 +27,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       icon: "h-10 w-10"
     };
 
-    return (
-      <button
-        className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
-        ref={ref}
-        {...props}
-      />
-    );
+    return React.createElement('button', {
+      className: `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`,
+      ref,
+      ...props
+    });
   }
 );
 
