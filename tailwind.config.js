@@ -18,42 +18,39 @@ module.exports = {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        border: "hsl(217 33% 17%)",
+        input: "hsl(217 33% 17%)",
+        ring: "hsl(193 76% 56%)",
+        background: "hsl(222 47% 11%)",
+        foreground: "hsl(210 40% 98%)",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "hsl(193 76% 56%)", // Ciano
+          foreground: "hsl(222 47% 11%)",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "hsl(271 76% 53%)", // Roxo
+          foreground: "hsl(210 40% 98%)",
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "hsl(0 84% 60%)",
+          foreground: "hsl(210 40% 98%)",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "hsl(217 33% 17%)",
+          foreground: "hsl(215 20% 65%)",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "hsl(217 33% 17%)",
+          foreground: "hsl(210 40% 98%)",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "hsl(222 47% 11%)",
+          foreground: "hsl(210 40% 98%)",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "hsl(222 47% 11%)",
+          foreground: "hsl(210 40% 98%)",
         },
-        // Cores personalizadas
-        'electric-blue': '#007bff', // Azul elétrico
-        'dark-gray': '#333333',    // Cinza escuro
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -73,6 +70,11 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-dark': 'linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(271 76% 23%) 50%, hsl(193 76% 26%) 100%)',
       },
     },
   },
