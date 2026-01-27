@@ -1,0 +1,244 @@
+import React, { useState } from ‘react’;
+import { useNavigate } from ‘react-router-dom’;
+import { generateContractPDF } from ‘../utils/pdfGenerator’;
+
+const NovoContrato = () => {
+const navigate = useNavigate();
+const [loading, setLoading] = useState(false);
+
+// Dados do Cliente
+const [nomeCliente, setNomeCliente] = useState(’’);
+const [cpfCnpj, setCpfCnpj] = useState(’’);
+const [email, setEmail] = useState(’’);
+const [endereco, setEndereco] = useState(’’);
+
+// Valores
+const [valorTotal, setValorTotal] = useState(’’);
+const [valorEntrada, setValorEntrada] = useState(’’);
+const [numeroParcelas, setNumeroParcelas] = useState(‘2’);
+const [valorParcela, setValorParcela] = useState(’’);
+const [diasVencimentoParcelas, setDiasVencimentoParcelas] = useState(‘60,90’);
+
+// Prazo
+const [prazoExecucao, setPrazoExecucao] = useState(‘45-60’);
+
+const handleSubmit = async (e: React.FormEvent) => {
+e.preventDefault();
+
+```
+if (!nomeCliente || !cpfCnpj || !valorTotal) {
+  alert('Preencha todos os campos obrigatórios');
+  return;
+}
+
+setLoading(true);
+
+try {
+  const contractData = {
+    id: Date.now().toString(),
+    tipo: 'Prestação de Serviços',
+    cliente: nomeCliente,
+    cpfCnpj,
+    email,
+    endereco,
+    valorTotal: parseFloat(valorTotal),
+    valorEntrada: parseFloat(valorEntrada),
+    numeroParcelas: parseInt(numeroParcelas),
+    valorParcela: parseFloat(valorParcela),
+    diasVencimentoParcelas,
+    prazoExecucao,
+    data: new Date().toISOString(),
+    local: 'São Paulo',
+  };
+
+  // Salvar no localStorage
+  const saved = localStorage.getItem('contratos');
+  const contracts = saved ? JSON.parse(saved) : [];
+  contracts.unshift(contractData);
+  localStorage.setItem('contratos', JSON.stringify(contracts));
+
+  // Gerar PDF
+  await generateContractPDF(contractData);
+
+  alert('Contrato gerado com sucesso!');
+  navigate('/dashboard');
+} catch (error) {
+  console.error('Erro ao gerar contrato:', error);
+  alert('Erro ao gerar contrato');
+} finally {
+  setLoading(false);
+}
+```
+
+};
+
+return (
+<div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
+<header className="bg-slate-800/50 backdrop-blur-sm border-b border-blue-500/30 shadow-lg">
+<div className="container mx-auto px-6 py-4 flex items-center gap-4">
+<button
+onClick={() => navigate(’/dashboard’)}
+className=“px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded transition-colors”
+>
+← Voltar
+</button>
+<h1 className="text-2xl font-bold">Novo Contrato</h1>
+</div>
+</header>
+
+```
+  <main className="container mx-auto px-6 py-8 max-w-4xl">
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Dados do Cliente */}
+      <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg border border-blue-500/30 shadow-xl p-6">
+        <h2 className="text-xl font-semibold mb-4 text-blue-300">Dados do Cliente</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-2">Nome Completo *</label>
+            <input
+              type="text"
+              value={nomeCliente}
+              onChange={(e) => setNomeCliente(e.target.value)}
+              required
+              className="w-full px-4 py-2 bg-slate-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Ex: João Silva Santos"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">CPF/CNPJ *</label>
+            <input
+              type="text"
+              value={cpfCnpj}
+              onChange={(e) => setCpfCnpj(e.target.value)}
+              required
+              className="w-full px-4 py-2 bg-slate-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="000.000.000-00"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">E-mail</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 bg-slate-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="email@exemplo.com"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-2">Endereço Completo</label>
+            <input
+              type="text"
+              value={endereco}
+              onChange={(e) => setEndereco(e.target.value)}
+              className="w-full px-4 py-2 bg-slate-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Rua, número, bairro, cidade/UF, CEP"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Valores e Pagamento */}
+      <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg border border-blue-500/30 shadow-xl p-6">
+        <h2 className="text-xl font-semibold mb-4 text-blue-300">Valores e Pagamento</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Valor Total (R$) *</label>
+            <input
+              type="number"
+              step="0.01"
+              value={valorTotal}
+              onChange={(e) => setValorTotal(e.target.value)}
+              required
+              className="w-full px-4 py-2 bg-slate-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="5900.00"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Valor de Entrada (R$) *</label>
+            <input
+              type="number"
+              step="0.01"
+              value={valorEntrada}
+              onChange={(e) => setValorEntrada(e.target.value)}
+              required
+              className="w-full px-4 py-2 bg-slate-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="3540.00"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Número de Parcelas *</label>
+            <input
+              type="number"
+              value={numeroParcelas}
+              onChange={(e) => setNumeroParcelas(e.target.value)}
+              required
+              className="w-full px-4 py-2 bg-slate-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Valor por Parcela (R$) *</label>
+            <input
+              type="number"
+              step="0.01"
+              value={valorParcela}
+              onChange={(e) => setValorParcela(e.target.value)}
+              required
+              className="w-full px-4 py-2 bg-slate-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="1180.00"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-2">
+              Vencimento das Parcelas (dias após assinatura)
+            </label>
+            <input
+              type="text"
+              value={diasVencimentoParcelas}
+              onChange={(e) => setDiasVencimentoParcelas(e.target.value)}
+              className="w-full px-4 py-2 bg-slate-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="60,90 (separado por vírgula)"
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              Ex: 60,90 significa 1ª parcela em 60 dias e 2ª em 90 dias
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Prazo de Execução */}
+      <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg border border-blue-500/30 shadow-xl p-6">
+        <h2 className="text-xl font-semibold mb-4 text-blue-300">Prazo de Execução</h2>
+        <div>
+          <label className="block text-sm font-medium mb-2">Prazo Estimado (dias úteis)</label>
+          <input
+            type="text"
+            value={prazoExecucao}
+            onChange={(e) => setPrazoExecucao(e.target.value)}
+            className="w-full px-4 py-2 bg-slate-700 border border-blue-500/30 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="45-60"
+          />
+          <p className="text-xs text-gray-400 mt-1">
+            Ex: 45-60 (quarenta e cinco a sessenta dias úteis)
+          </p>
+        </div>
+      </div>
+
+      {/* Botão Submit */}
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-semibold py-4 rounded-lg shadow-lg transition-all"
+      >
+        {loading ? 'Gerando Contrato...' : 'Gerar Contrato em PDF'}
+      </button>
+    </form>
+  </main>
+</div>
+```
+
+);
+};
+
+export default NovoContrato;

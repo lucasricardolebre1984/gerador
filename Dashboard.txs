@@ -1,0 +1,191 @@
+import React, { useState, useEffect } from ‘react’;
+import { useNavigate } from ‘react-router-dom’;
+import mammoth from ‘mammoth’;
+import { generateContractPDF } from ‘../utils/pdfGenerator’;
+
+interface Contract {
+id: string;
+tipo: string;
+cliente: string;
+valor: number;
+data: string;
+}
+
+const Dashboard = () => {
+const navigate = useNavigate();
+const [contracts, setContracts] = useState<Contract[]>([]);
+const [uploading, setUploading] = useState(false);
+
+useEffect(() => {
+loadContracts();
+}, []);
+
+const loadContracts = () => {
+const saved = localStorage.getItem(‘contratos’);
+if (saved) {
+setContracts(JSON.parse(saved));
+}
+};
+
+const handleUploadWord = async (e: React.ChangeEvent<HTMLInputElement>) => {
+const file = e.target.files?.[0];
+if (!file) return;
+
+```
+setUploading(true);
+try {
+  const arrayBuffer = await file.arrayBuffer();
+  const result = await mammoth.extractRawText({ arrayBuffer });
+  
+  // Extrair dados do Word
+  const text = result.value;
+  const clienteMatch = text.match(/Nome:\s*([^\n]+)/);
+  const valorMatch = text.match(/R\$\s*([\d.,]+)/);
+  
+  const contractData = {
+    id: Date.now().toString(),
+    tipo: 'Prestação de Serviços',
+    cliente: clienteMatch ? clienteMatch[1].trim() : 'Cliente',
+    valor: valorMatch ? parseFloat(valorMatch[1].replace(/\./g, '').replace(',', '.')) : 0,
+    data: new Date().toISOString(),
+    textoCompleto: text
+  };
+
+  // Salvar no localStorage
+  const newContracts = [contractData, ...contracts];
+  localStorage.setItem('contratos', JSON.stringify(newContracts));
+  setContracts(newContracts);
+
+  // Gerar PDF automaticamente
+  await generateContractPDF(contractData);
+  
+  alert('Contrato importado e PDF gerado com sucesso!');
+} catch (error) {
+  console.error('Erro ao processar Word:', error);
+  alert('Erro ao processar arquivo Word');
+} finally {
+  setUploading(false);
+}
+```
+
+};
+
+const handleDownloadPDF = async (contract: Contract) => {
+await generateContractPDF(contract);
+};
+
+const handleDelete = (id: string) => {
+if (confirm(‘Deseja excluir este contrato?’)) {
+const newContracts = contracts.filter(c => c.id !== id);
+localStorage.setItem(‘contratos’, JSON.stringify(newContracts));
+setContracts(newContracts);
+}
+};
+
+return (
+<div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
+{/* Header */}
+<header className="bg-slate-800/50 backdrop-blur-sm border-b border-blue-500/30 shadow-lg">
+<div className="container mx-auto px-6 py-6">
+<div className="flex items-center gap-4">
+<div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center">
+<span className="text-2xl font-bold">FC</span>
+</div>
+<div>
+<h1 className="text-3xl font-bold">FC Soluções Financeiras</h1>
+<p className="text-blue-300">Gerador de Contratos</p>
+</div>
+</div>
+</div>
+</header>
+
+```
+  {/* Main Content */}
+  <main className="container mx-auto px-6 py-8">
+    {/* Actions */}
+    <div className="flex flex-col md:flex-row gap-4 mb-8">
+      <button
+        onClick={() => navigate('/novo-contrato')}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg transition-all"
+      >
+        + Novo Contrato (Formulário)
+      </button>
+      
+      <label className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg cursor-pointer transition-all text-center">
+        {uploading ? 'Processando...' : '📄 Upload Word → PDF Timbrado'}
+        <input
+          type="file"
+          accept=".docx"
+          onChange={handleUploadWord}
+          disabled={uploading}
+          className="hidden"
+        />
+      </label>
+    </div>
+
+    {/* Contracts List */}
+    <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg border border-blue-500/30 shadow-xl">
+      <div className="p-6 border-b border-blue-500/30">
+        <h2 className="text-xl font-semibold">Contratos Gerados</h2>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-blue-500/30 bg-slate-700/30">
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Data</th>
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Tipo</th>
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Cliente</th>
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Valor</th>
+              <th className="px-6 py-3 text-right text-sm font-medium uppercase">Ações</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-blue-500/20">
+            {contracts.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
+                  Nenhum contrato gerado ainda
+                </td>
+              </tr>
+            ) : (
+              contracts.map((contract) => (
+                <tr key={contract.id} className="hover:bg-slate-700/30 transition-colors">
+                  <td className="px-6 py-4 text-sm">
+                    {new Date(contract.data).toLocaleDateString('pt-BR')}
+                  </td>
+                  <td className="px-6 py-4 text-sm">{contract.tipo}</td>
+                  <td className="px-6 py-4 font-medium">{contract.cliente}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-blue-400">
+                    R$ {contract.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex gap-2 justify-end">
+                      <button
+                        onClick={() => handleDownloadPDF(contract)}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
+                      >
+                        Baixar PDF
+                      </button>
+                      <button
+                        onClick={() => handleDelete(contract.id)}
+                        className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-sm transition-colors"
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+```
+
+);
+};
+
+export default Dashboard;
